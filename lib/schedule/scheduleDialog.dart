@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'scheduleDateTime.dart';
-import 'item.dart';
+import 'trip.dart';
 
 class ScheduleDialog extends StatefulWidget {
   const ScheduleDialog({super.key});
@@ -207,7 +207,8 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                       if(_formKey.currentState!.validate()) {
                         Navigator.pop(
                           context,
-                          Item(
+                          Trip(
+                              id: 0,
                               headerValue: name,
                               expandedValue: content,
                               date: dateTime

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'item.dart';
+import 'trip.dart';
 import 'scheduleDialog.dart';
 import 'calendar.dart';
 
@@ -15,18 +15,29 @@ class ScheduleList extends StatefulWidget{
 }
 
 class _ScheduleListState extends State<ScheduleList>{
-  VerticalFlipShowingType headerFlipShowingType = VerticalFlipShowingType.calendar;
+  VerticalFlipShowingType headerFlipShowingType = VerticalFlipShowingType.all;
   final ScrollController scrollController = ScrollController();
   final double headerFlipThreshold = 50;
   final double headerFlipHeightA = 400;
   final double headerFlipHeightB = 0;
   double get headerFlipHeight => headerFlipHeightA + headerFlipHeightB;
 
-  late List<Item> _allData;
-  late List<Item> _data;
+  late TripDatabase tripDatabase;
+  late List<Trip> _data;
   String ?dateTime;
   DateTime selectDate = DateTime.now();
   DateTime changeSelectDate = DateTime.now();
+
+  void choiceTrip(){
+    setState(() {
+      if(headerFlipShowingType == VerticalFlipShowingType.calendar) {
+        _data = tripDatabase.getSelectDayTrip(selectDate);
+      }else{
+        _data = tripDatabase.getAllTrip();
+      }
+    });
+
+  }
 
   void addSchedule(){
     dateTime = '';
@@ -37,33 +48,18 @@ class _ScheduleListState extends State<ScheduleList>{
           return const ScheduleDialog();
         }
     ).then(
-            (item){
+            (value){
           setState(() {
-            _allData.add(item);
-            if(headerFlipShowingType == VerticalFlipShowingType.calendar) {
-              addSelectedDataItem(item);
-            }else{
-              _data.add(item);
+            Trip ?trip = value is Trip ? value : null;
+            if(trip != null){
+              tripDatabase.add(trip.headerValue, trip.expandedValue, trip.date);
             }
+            choiceTrip();
           });
         }
     );
   }
 
-  void setSelectedData(){
-    _data.clear();
-    for(Item i in _allData){
-      if(isSelectedDay(i.date.getDateTime())){
-        _data.add(i);
-      }
-    }
-  }
-
-  void addSelectedDataItem(Item i){
-    if(isSelectedDay(i.date.getDateTime())){
-      _data.add(i);
-    }
-  }
 
   bool isDateWithin24Hours(DateTime targetDate) {
     // 取得現在的日期時間
@@ -97,24 +93,33 @@ class _ScheduleListState extends State<ScheduleList>{
       selectDate = date;
     });
   }
+  List<Trip> selectTrip(){
+    if(headerFlipShowingType == VerticalFlipShowingType.calendar) {
+      return tripDatabase.getSelectDayTrip(selectDate);
+    }else{
+      return tripDatabase.getAllTrip();
+    }
+  }
 
   @override
   void initState(){
     super.initState();
-    _allData = <Item>[];
-    _data = <Item>[];
+    tripDatabase = TripDatabase();
+    tripDatabase.selectAllToTrip().then((result) {
+      _data = tripDatabase.getAllTrip();
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context){
-    if(!isSelectedDay(changeSelectDate)){
-      setSelectedData();
-    }
-    changeSelectDate = selectDate;
+    //if(!isSelectedDay(changeSelectDate)){
+    choiceTrip();
+    //}
+    //changeSelectDate = selectDate;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-
           SliverToBoxAdapter(child: _buildHeaderWidget()),
           SliverToBoxAdapter(
             child: IconButton(
@@ -128,18 +133,14 @@ class _ScheduleListState extends State<ScheduleList>{
                       ? VerticalFlipShowingType.all
                       : VerticalFlipShowingType.calendar;
 
-                  if(headerFlipShowingType == VerticalFlipShowingType.all){
-                    _data = List.from(_allData);
-                  }else{
-                    setSelectedData();
-                  }
+                  choiceTrip();
                 });
               },
             ),
           ),
           SliverToBoxAdapter(
               child: Container(
-                  child: ExpansionPanelList(
+                  child:  ExpansionPanelList(
                     expansionCallback: (index, isExpanded){
                       setState(
                               () {
@@ -148,25 +149,24 @@ class _ScheduleListState extends State<ScheduleList>{
                       );
                     },
                     children: _data.map<ExpansionPanel>(
-                            (Item item) {
+                            (Trip trip) {
                           return ExpansionPanel(
                             headerBuilder: (BuildContext context, bool isExpanded){
                               return ListTile(
-                                title: Text(item.headerValue),
-                                subtitle: Text(item.date.toString()),
+                                title: Text(trip.headerValue),
+                                subtitle: Text(trip.date.toString()),
                               );
                             },
                             body: ListTile(
-                                title: Text(item.expandedValue),
-                                subtitle: Text(item.date.toString()),
+                                title: Text(trip.expandedValue),
+                                subtitle: Text(trip.date.toString()),
                                 trailing: const Icon(Icons.delete),
                                 onTap: () {
                                   setState(() {
-                                    _data.removeWhere((Item currentItem) => item == currentItem);
-                                    _allData.removeWhere((Item currentItem) => item == currentItem);
+                                    tripDatabase.remove(trip);
                                   });
                                 }),
-                            isExpanded: item.isExpanded,
+                            isExpanded: trip.isExpanded,
                           );
                         }
                     ).toList(),
@@ -180,16 +180,6 @@ class _ScheduleListState extends State<ScheduleList>{
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),
-    );
-  }
-
-  void sortScheculeList(){
-    _allData.sort(
-            (a, b){
-          var adate = a.date.getDateTime();
-          var bdate = b.date.getDateTime();
-          return adate.compareTo(bdate);
-        }
     );
   }
 
