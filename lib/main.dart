@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'schedule/schedule.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'schedule/calendar.dart';
+
 
 void main() {
   runApp(const MyApp());

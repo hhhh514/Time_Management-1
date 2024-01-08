@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import '../schedule/schedule.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import '../kit/function_menu.dart';
 final player=AudioPlayer()..setReleaseMode(ReleaseMode.loop);
 
 void main() {
@@ -58,7 +59,6 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
             currentTime--;
           } else {
             player.stop();
-            this.showAlertDialog(context);
             timer.cancel();
             if (isWorking) {
 
@@ -74,6 +74,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
               }
             }
             isWorking = !isWorking;
+            this.showAlertDialog(context);
           }
         });
       });
@@ -128,6 +129,7 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
               setState(() {
                 player.stop();
                 isRunning=true;
+                startTimer();
               });
               Navigator.pop(context);
             }
@@ -148,13 +150,10 @@ class _PomodoroTimerState extends State<PomodoroTimer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => Schedule()));},
-        ),
+
         title: const Text('Pomodoro Timer'),
       ),
+      drawer: const FunctionMenu(),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(

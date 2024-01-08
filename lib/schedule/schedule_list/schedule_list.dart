@@ -39,22 +39,54 @@ class _ScheduleListState extends State<ScheduleList>{
 
   }
 
+  void updateSchedule(Trip trip){
+    showDialog(
+        context: context,
+        builder: (BuildContext context)
+        {
+          return ScheduleDialog.update(name: trip.headerValue, content: trip.expandedValue, dateTime: trip.date);
+        }
+    ).then(
+            (value){
+          setState(() {
+            Trip ?newTrip = value is Trip ? value : null;
+            if(newTrip != null){
+              tripDatabase.edit(trip.id, newTrip.headerValue, newTrip.expandedValue, newTrip.date).then(
+                      (value){
+                    choiceTrip();
+                    setState(() {
+
+                    });
+                  }
+              );
+            }
+          });
+        }
+    );
+  }
+
   void addSchedule(){
     dateTime = '';
     showDialog(
         context: context,
         builder: (BuildContext context)
         {
-          return const ScheduleDialog();
+          return ScheduleDialog();
         }
     ).then(
             (value){
           setState(() {
             Trip ?trip = value is Trip ? value : null;
             if(trip != null){
-              tripDatabase.add(trip.headerValue, trip.expandedValue, trip.date);
+              tripDatabase.add(trip.headerValue, trip.expandedValue, trip.date).then(
+                      (value){
+                    choiceTrip();
+                    setState(() {
+
+                    });
+                  }
+              );
             }
-            choiceTrip();
           });
         }
     );
@@ -105,7 +137,7 @@ class _ScheduleListState extends State<ScheduleList>{
   void initState(){
     super.initState();
     tripDatabase = TripDatabase();
-    tripDatabase.selectAllToTrip().then((result) {
+    tripDatabase.selectLaterTrips().then((result) {
       _data = tripDatabase.getAllTrip();
       setState(() {});
     });
@@ -158,14 +190,31 @@ class _ScheduleListState extends State<ScheduleList>{
                               );
                             },
                             body: ListTile(
+                                //tileColor: Colors.grey,
                                 title: Text(trip.expandedValue),
-                                subtitle: Text(trip.date.toString()),
-                                trailing: const Icon(Icons.delete),
-                                onTap: () {
-                                  setState(() {
-                                    tripDatabase.remove(trip);
-                                  });
-                                }),
+                                //subtitle: Text(trip.date.toString()),
+                                trailing: Wrap(
+                                  spacing: 12,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.edit),
+                                      onPressed: () {
+                                        setState(() {
+                                          updateSchedule(trip);
+                                        });
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.delete),
+                                      onPressed: () {
+                                        setState(() {
+                                          tripDatabase.remove(trip);
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                            ),
                             isExpanded: trip.isExpanded,
                           );
                         }
@@ -198,7 +247,7 @@ class _ScheduleListState extends State<ScheduleList>{
             height: headerFlipHeight,
             child: ListView(
               padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(), // 不可滾動
+              physics: const NeverScrollableScrollPhysics(),
               children: [
                 SizedBox(
                   height: headerFlipHeightA,

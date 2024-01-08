@@ -72,6 +72,20 @@ class Sql {
     return {};
   }
 
+  Future<List<Map>> selectW(String p, String o) async{
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(
+        currentTable,
+        columns: params.keys.toList().cast<String>(),
+        where: p,
+        whereArgs: [o]
+    );
+    if(maps.isNotEmpty){
+      return maps;
+    }
+    return [];
+  }
+
   Future<List<Map>> selectAll() async{
     var dbClient = await db;
     List<Map<String, Object?>> maps = await dbClient.query(

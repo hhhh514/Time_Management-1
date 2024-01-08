@@ -20,7 +20,7 @@ class _FunctionMenuState extends State<FunctionMenu>{
         currentAccountPicture: Icon(Icons.person),
       ),
       ListTile(
-        leading: const Icon(Icons.access_time),
+        leading: const Icon(Icons.timeline),
         title: const Text('行程管理'),
         subtitle: const Text("編輯你的行程、代辦事項"),
         onTap: () => {

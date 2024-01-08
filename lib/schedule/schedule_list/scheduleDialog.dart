@@ -4,21 +4,10 @@ import 'scheduleDateTime.dart';
 import 'trip.dart';
 
 class ScheduleDialog extends StatefulWidget {
-  const ScheduleDialog({super.key});
-
-  @override
-  State<ScheduleDialog> createState() => _ScheduleDialogState();
-}
-
-class _ScheduleDialogState extends State<ScheduleDialog> {
   String name = '';
   String content = '';
   late ScheduleDateTime dateTime;
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState(){
-    super.initState();
+  ScheduleDialog({super.key}){
     dateTime = ScheduleDateTime(
         year: DateTime.now().year,
         month: DateTime.now().month,
@@ -26,6 +15,23 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
         hour: DateTime.now().hour,
         minute: DateTime.now().minute
     );
+  }
+  ScheduleDialog.update({super.key, required this.name, required this.content, required this.dateTime});
+
+  @override
+  State<ScheduleDialog> createState() => _ScheduleDialogState();
+}
+
+class _ScheduleDialogState extends State<ScheduleDialog> {
+  //String name = '';
+  //String content = '';
+  //late ScheduleDateTime dateTime;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState(){
+    super.initState();
+
   }
 
   @override
@@ -41,6 +47,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
               Container(
                 width: 300,
                 child: TextFormField(
+                  initialValue: widget.name,
                   autofocus: true,
                   decoration: const InputDecoration(
                       labelText: "行程名稱", hintText: '請輸入行程名稱'),
@@ -48,7 +55,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                     if(value == null || value.isEmpty){
                       return '請輸入行程名稱';
                     }
-                    name = value;
+                    widget.name = value;
                     return null;
                   },
                 ),
@@ -56,11 +63,12 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
               Container(
                 width: 300,
                 child: TextFormField(
+                  initialValue: widget.content,
                   autofocus: true,
                   decoration: const InputDecoration(
                       labelText: "行程內容", hintText: '請輸入行程內容'),
                   validator: (value){
-                    content = value ?? "";
+                    widget.content = value ?? "";
                     return null;
                   },
                 ),
@@ -84,7 +92,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                   Container(
                     width: 50,
                     child: TextFormField(
-                      controller: TextEditingController(text: dateTime.year.toString()),
+                      controller: TextEditingController(text: widget.dateTime.year.toString()),
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -95,7 +103,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                         if(v == null || v < DateTime.now().year){
                           return '';
                         }
-                        dateTime.year = v;
+                        widget.dateTime.year = v;
                         return null;
                       },
                     ),
@@ -108,7 +116,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                   Container(
                     width: 30,
                     child: TextFormField(
-                      controller: TextEditingController(text: dateTime.month.toString()),
+                      controller: TextEditingController(text: widget.dateTime.month.toString()),
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -119,7 +127,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                         if(v == null || v < 1 || v > 12){
                           return '';
                         }
-                        dateTime.month = v;
+                        widget.dateTime.month = v;
                         return null;
                       },
                     ),
@@ -131,7 +139,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                   Container(
                     width: 30,
                     child: TextFormField(
-                      controller: TextEditingController(text: dateTime.day.toString()),
+                      controller: TextEditingController(text: widget.dateTime.day.toString()),
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -139,10 +147,10 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                       maxLength: 2,
                       validator: (value){
                         int ?v = int.tryParse(value ?? "") ;
-                        if(v == null || v < 1 || v > getMaxDaysInMonth(dateTime.year, dateTime.month)){
+                        if(v == null || v < 1 || v > getMaxDaysInMonth(widget.dateTime.year, widget.dateTime.month)){
                           return '';
                         }
-                        dateTime.day = v;
+                        widget.dateTime.day = v;
                         return null;
                       },
                     ),
@@ -155,7 +163,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                   Container(
                     width: 30,
                     child: TextFormField(
-                      controller: TextEditingController(text: dateTime.hour.toString()),
+                      controller: TextEditingController(text: widget.dateTime.hour.toString()),
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -166,7 +174,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                         if(v == null || v < 0 || v > 59){
                           return '';
                         }
-                        dateTime.hour = v;
+                        widget.dateTime.hour = v;
                         return null;
                       },
                     ),
@@ -178,7 +186,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                   Container(
                     width: 30,
                     child: TextFormField(
-                      controller: TextEditingController(text: dateTime.minute.toString()),
+                      controller: TextEditingController(text: widget.dateTime.minute.toString()),
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.digitsOnly,
@@ -189,7 +197,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                         if(v == null || v < 0 || v > 59){
                           return '';
                         }
-                        dateTime.minute = v;
+                        widget.dateTime.minute = v;
                         return null;
                       },
                     ),
@@ -209,9 +217,9 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
                           context,
                           Trip(
                               id: 0,
-                              headerValue: name,
-                              expandedValue: content,
-                              date: dateTime
+                              headerValue: widget.name,
+                              expandedValue: widget.content,
+                              date: widget.dateTime
                           ),
                         );
                       }
@@ -236,7 +244,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
   }
 
   ScheduleDateTime? getDate() {
-    return dateTime;
+    return widget.dateTime;
   }
 
   void chooseDateTime() {
@@ -251,7 +259,7 @@ class _ScheduleDialogState extends State<ScheduleDialog> {
         initialTime: TimeOfDay.now(),
       ).then((time) {
         setState(() {
-          dateTime = ScheduleDateTime(
+          widget.dateTime = ScheduleDateTime(
               year: date?.year ?? DateTime.now().year,
               month: date?.month ?? DateTime.now().month,
               day: date?.day ?? DateTime.now().day,

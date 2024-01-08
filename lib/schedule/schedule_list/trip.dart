@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'scheduleDateTime.dart';
-import '../sqlite/sqlite.dart';
+import '../../sqlite/sqlite.dart';
 
 // stores ExpansionPanel state information
 class Trip {
@@ -41,6 +41,27 @@ class TripDatabase extends Sql{
   List<Trip> allTrip = [];
   TripDatabase() : super(dbname: "trip", currentTable: "trip", params: Trip.toColTitle());
 
+
+  selectLaterTrips() async{
+    DateTime now = DateTime.now();
+    List<Map> value =  await super.selectW('`DateTime`>=?', "${now.year.toString()}-${now.month.toString().padLeft(2,'0')}-${now.day.toString().padLeft(2,'0')} ${now.hour.toString().padLeft(2,'0')}-${now.minute.toString().padLeft(2,'0')}");
+    if(value != []){
+      for (Map element in value) {
+        allTrip.add(
+            Trip(
+                id: int.parse(element['ID'].toString()),
+                headerValue: element['Title'].toString(),
+                expandedValue: element['Content'].toString(),
+                date: ScheduleDateTime.fromString(element['DateTime'].toString())
+            )
+        );
+      }
+      sort();
+    }
+    return allTrip;
+  }
+
+
   selectAllToTrip() async{
     List<Map> value =  await super.selectAll();
     if(value != []){
@@ -57,6 +78,19 @@ class TripDatabase extends Sql{
       sort();
     }
     return allTrip;
+  }
+
+  edit(int id, String title, String content, ScheduleDateTime date) async{
+    var temp = Trip.toMapWithData(title, content, date);
+    temp['ID'] = id;
+    await super.update(temp).then(
+            (value) {
+          if(value is int){
+            allTrip[allTrip.indexWhere((element) => element.id == id)] = Trip(id: id, headerValue: title, expandedValue: content, date: date);
+            //allTrip.add(Trip(id: value, headerValue: title, expandedValue: content, date: date));
+            sort();
+          }
+        });
   }
 
   add(String title, String content, ScheduleDateTime date) async{

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'schedule_list.dart';
+import 'schedule_list/schedule_list.dart';
 import '../kit/function_menu.dart';
 
 class Schedule extends StatefulWidget{
