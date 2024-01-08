@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'scheduleDateTime.dart';
 import '../../sqlite/sqlite.dart';
+import '../../plugins/notification.dart';
 
 // stores ExpansionPanel state information
 class Trip {
@@ -39,8 +40,12 @@ class Trip {
 
 class TripDatabase extends Sql{
   List<Trip> allTrip = [];
-  TripDatabase() : super(dbname: "trip", currentTable: "trip", params: Trip.toColTitle());
+  TripDatabase() : super(dbname: "trip", currentTable: "trip", params: Trip.toColTitle()){
+    NotificationPlugin().init();
+  }
+  void init() async {
 
+  }
 
   selectLaterTrips() async{
     DateTime now = DateTime.now();
@@ -99,6 +104,17 @@ class TripDatabase extends Sql{
               if(value is int){
                 allTrip.add(Trip(id: value, headerValue: title, expandedValue: content, date: date));
                 sort();
+                /*NotificationPlugin().showNotification(
+                  title: '每日一報',
+                  body: '您訂閱的新聞已更新',
+                );*/
+                //註冊提醒事件
+                NotificationPlugin().showScheduledNotification(
+                  id: value,
+                  title: title,
+                  body: content,
+                  scheduledDate: date.getDateTime(),
+                );
               }
             });
   }
@@ -106,6 +122,7 @@ class TripDatabase extends Sql{
   void remove(Trip trip){
     super.delete(trip.id);
     allTrip.removeWhere((Trip currentItem) => trip == currentItem);
+    NotificationPlugin().removeScheduledNotification(trip.id);
   }
 
   void sort(){

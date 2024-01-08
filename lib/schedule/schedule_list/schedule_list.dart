@@ -39,6 +39,7 @@ class _ScheduleListState extends State<ScheduleList>{
 
   }
 
+
   void updateSchedule(Trip trip){
     showDialog(
         context: context,
@@ -66,6 +67,7 @@ class _ScheduleListState extends State<ScheduleList>{
   }
 
   void addSchedule(){
+
     dateTime = '';
     showDialog(
         context: context,
@@ -80,8 +82,9 @@ class _ScheduleListState extends State<ScheduleList>{
             if(trip != null){
               tripDatabase.add(trip.headerValue, trip.expandedValue, trip.date).then(
                       (value){
-                    choiceTrip();
-                    setState(() {
+
+                        choiceTrip();
+                        setState(() {
 
                     });
                   }
@@ -92,46 +95,12 @@ class _ScheduleListState extends State<ScheduleList>{
     );
   }
 
-
-  bool isDateWithin24Hours(DateTime targetDate) {
-    // 取得現在的日期時間
-    DateTime now = DateTime.now();
-
-    // 計算兩個日期時間的差異
-    Duration difference = now.difference(targetDate);
-
-    // 判斷差異是否在24小時以內
-    return difference.inHours.abs() < 24;
-  }
-
-  bool isSelectedDay(DateTime targetDate){
-    return selectDate.year == targetDate.year &&
-        selectDate.month == targetDate.month &&
-        selectDate.day == targetDate.day;
-  }
-
-  bool isDateToday(DateTime targetDate) {
-    // 取得現在的日期時間
-    DateTime now = DateTime.now();
-
-    // 比較年、月、日是否相同
-    return now.year == targetDate.year &&
-        now.month == targetDate.month &&
-        now.day == targetDate.day;
-  }
-
   void _handleSelectDate(DateTime date){
     setState(() {
       selectDate = date;
     });
   }
-  List<Trip> selectTrip(){
-    if(headerFlipShowingType == VerticalFlipShowingType.calendar) {
-      return tripDatabase.getSelectDayTrip(selectDate);
-    }else{
-      return tripDatabase.getAllTrip();
-    }
-  }
+
 
   @override
   void initState(){
@@ -145,10 +114,7 @@ class _ScheduleListState extends State<ScheduleList>{
 
   @override
   Widget build(BuildContext context){
-    //if(!isSelectedDay(changeSelectDate)){
     choiceTrip();
-    //}
-    //changeSelectDate = selectDate;
     return Scaffold(
       body: CustomScrollView(
         slivers: [
@@ -183,6 +149,7 @@ class _ScheduleListState extends State<ScheduleList>{
                     children: _data.map<ExpansionPanel>(
                             (Trip trip) {
                           return ExpansionPanel(
+                            canTapOnHeader: true,
                             headerBuilder: (BuildContext context, bool isExpanded){
                               return ListTile(
                                 title: Text(trip.headerValue),
