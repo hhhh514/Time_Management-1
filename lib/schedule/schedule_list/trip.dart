@@ -104,10 +104,6 @@ class TripDatabase extends Sql{
               if(value is int){
                 allTrip.add(Trip(id: value, headerValue: title, expandedValue: content, date: date));
                 sort();
-                /*NotificationPlugin().showNotification(
-                  title: '每日一報',
-                  body: '您訂閱的新聞已更新',
-                );*/
                 //註冊提醒事件
                 NotificationPlugin().showScheduledNotification(
                   id: value,

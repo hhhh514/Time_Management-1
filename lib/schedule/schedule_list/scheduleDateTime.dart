@@ -33,4 +33,13 @@ class ScheduleDateTime{
     required this.hour,
     required this.minute,
   });
+
+  ScheduleDateTime.now(){
+    DateTime now = DateTime.now();
+    year = now.year;
+    month = now.month;
+    day = now.minute;
+    hour = now.hour;
+    minute = now.minute;
+  }
 }
