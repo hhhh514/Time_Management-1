@@ -16,6 +16,7 @@ class ScheduleDialog extends StatefulWidget {
         minute: DateTime.now().minute
     );
   }
+  ScheduleDialog.select({super.key, required this.dateTime});
   ScheduleDialog.update({super.key, required this.name, required this.content, required this.dateTime});
 
   @override

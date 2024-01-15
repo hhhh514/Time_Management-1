@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_management/schedule/schedule_list/scheduleDateTime.dart';
 import 'trip.dart';
 import 'scheduleDialog.dart';
 import 'calendar.dart';
@@ -65,6 +66,10 @@ class _ScheduleListState extends State<ScheduleList>{
         }
     );
   }
+  bool isToday(DateTime date) {
+    DateTime now = DateTime.now();
+    return date.year == now.year && date.month == now.month && date.day == now.day;
+  }
 
   void addSchedule(){
 
@@ -73,7 +78,11 @@ class _ScheduleListState extends State<ScheduleList>{
         context: context,
         builder: (BuildContext context)
         {
-          return ScheduleDialog();
+          if(isToday(selectDate)){
+            return ScheduleDialog();
+          }else {
+            return ScheduleDialog.select(dateTime: ScheduleDateTime.fromDateTime(selectDate));
+          }
         }
     ).then(
             (value){
@@ -218,7 +227,7 @@ class _ScheduleListState extends State<ScheduleList>{
               children: [
                 SizedBox(
                   height: headerFlipHeightA,
-                  child: Calendar(selectedDay: _handleSelectDate, listUpdate: setState,),
+                  child: Calendar(selectedDay: _handleSelectDate, listUpdate: setState, tripList: tripDatabase.getAllTrip(),),
                 ),
                 SizedBox(
                   height: headerFlipHeightB,

@@ -34,11 +34,19 @@ class ScheduleDateTime{
     required this.minute,
   });
 
+  ScheduleDateTime.fromDateTime(DateTime dateTime){
+    year = dateTime.year;
+    month = dateTime.month;
+    day = dateTime.day;
+    hour = dateTime.hour;
+    minute = dateTime.minute;
+  }
+
   ScheduleDateTime.now(){
     DateTime now = DateTime.now();
     year = now.year;
     month = now.month;
-    day = now.minute;
+    day = now.day;
     hour = now.hour;
     minute = now.minute;
   }
