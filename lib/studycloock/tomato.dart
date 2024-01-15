@@ -6,18 +6,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import '../kit/function_menu.dart';
 final player=AudioPlayer()..setReleaseMode(ReleaseMode.loop);
 
-void main() {
-  runApp(MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: PomodoroTimer(),
-    );
-  }
-}
 class PomodoroTimer extends StatefulWidget {
   @override
   _PomodoroTimerState createState() => _PomodoroTimerState();

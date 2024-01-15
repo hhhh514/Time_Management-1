@@ -5,22 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../kit/function_menu.dart';
 import 'dart:convert';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Work_Time App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: ShiftSchedule(),
-    );
-  }
-}
 
 class ShiftSchedule extends StatefulWidget {
   const ShiftSchedule({super.key});

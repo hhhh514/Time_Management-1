@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../schedule/schedule.dart';
 import '../studycloock/tomato.dart';
 import '../shift/shift_schedule.dart';
+import '../clock/clock.dart';
 class FunctionMenu extends StatefulWidget{
   const FunctionMenu({super.key});
   @override
@@ -57,6 +58,20 @@ class _FunctionMenuState extends State<FunctionMenu>{
             context,
             MaterialPageRoute(
               builder: (context) => ShiftSchedule(),
+            ),
+                (route) => false,
+          )
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.rule),
+        title: const Text('時鐘管理'),
+        subtitle: const Text("一切跟時間有關的都在這"),
+        onTap: () => {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Clock(),
             ),
                 (route) => false,
           )
