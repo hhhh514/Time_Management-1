@@ -20,7 +20,7 @@ class _ScheduleState extends State<Schedule> with SingleTickerProviderStateMixin
     _controller = TabController(initialIndex: 0, length: 3, vsync: this);
     _tabs = <Tab>[
       const Tab(text: "行程列表",),
-      const Tab(text: "代辦事項",),
+      const Tab(text: "待辦事項",),
       const Tab(text: "個人習慣",),
     ];
   }

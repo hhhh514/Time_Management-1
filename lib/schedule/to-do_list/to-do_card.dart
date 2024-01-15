@@ -72,11 +72,56 @@ class _TodoCardState extends State<TodoCard> {
               )),
           IconButton(
               onPressed: () {
-                widget.deleteFunction(anotherTodo);
+                showDeleteConfirmationDialog(context).then((value){
+                  if(value == true){
+                    widget.deleteFunction(anotherTodo);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('刪除成功'),
+                      ),
+                    );
+                  }
+                });
+
               },
               icon: const Icon(Icons.close))
         ],
       ),
+    );
+  }
+
+  Future<bool?> showDeleteConfirmationDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('確認刪除'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('確定要刪除嗎？'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                // 返回 false 表示取消删除
+                Navigator.of(context).pop(false);
+              },
+              child: Text('取消'),
+            ),
+            TextButton(
+              onPressed: () {
+                // 返回 true 表示确认删除
+                Navigator.of(context).pop(true);
+              },
+              child: Text('確定'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

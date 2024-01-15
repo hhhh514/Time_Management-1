@@ -35,7 +35,7 @@ class _TodoListState extends State<TodoList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Todo app'),
+        title: const Text('今日待辦事項'),
         centerTitle: true,
       ),
       body: Column(
@@ -49,7 +49,7 @@ class _TodoListState extends State<TodoList> {
                 var dataLength = data == null ? 0 : data.length;
                 return dataLength == 0
                     ? const Center(
-                  child: Text("no data found"),
+                  child: Text("今日還沒有事項要處裡哦!"),
                 )
                     : ListView.builder(
                     itemCount: dataLength,
