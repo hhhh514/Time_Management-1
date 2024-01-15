@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../schedule/schedule.dart';
 import '../studycloock/tomato.dart';
+import '../shift/shift_schedule.dart';
 class FunctionMenu extends StatefulWidget{
   const FunctionMenu({super.key});
   @override
@@ -42,6 +43,20 @@ class _FunctionMenuState extends State<FunctionMenu>{
             context,
             MaterialPageRoute(
               builder: (context) => PomodoroTimer(),
+            ),
+                (route) => false,
+          )
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.rule),
+        title: const Text('班表'),
+        subtitle: const Text("選取工作日期"),
+        onTap: () => {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ShiftSchedule(),
             ),
                 (route) => false,
           )
